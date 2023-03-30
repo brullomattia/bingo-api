@@ -4,12 +4,11 @@ const cardController = require('./controllers/card.controller.js')
 
 const router = require('express').Router();
 
-"/api/users/addUser"
-
 //users
 router.post('/users/addUser', userController.addUser);
 router.get('/auth/:mobile_id', userController.auth);
 router.get('/users', userController.getUsers);
+router.get('/users/ready', userController.ready);
 
 //matches
 router.post('/matches/addMatch', matchController.addMatch);

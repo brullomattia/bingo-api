@@ -50,12 +50,24 @@ const getUsers = async (req, res) => {
     }
 }
 
+const ready = async (req, res) => {
+    const match_id = req.params.match_id;
+
+    try {
+        await Match.increment('connected',{ where: { id: match_id}})
+        res.status(200);
+    } catch (error) {
+        res.status(400).send({error: error});
+    }
+}
+
 
 
 
 module.exports = {
     addUser,
     auth,
-    getUsers
+    getUsers,
+    ready
     
 }

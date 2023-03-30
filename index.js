@@ -19,23 +19,21 @@ app.use(express.urlencoded({ extended: true }))
 const router = require('./routes.js');
 app.use('/api', router);
 
-
-//server sent events 
-app.get("/sse/:id", async (req, res) => {
+  app.get("/start_game/:id", async (req, res) => {
     const match_id = req.params.id;
-    await Match.increment('connected',{ where: { id: match_id}})
+    //await Match.increment('connected',{ where: { id: match_id}})
     res.set("Content-Type", "text/event-stream")
     res.set("Connection", "keep-alive")
     res.set("Cache-Control", "no-cache")
     res.set("Access-Control-Allow-Origin", "*")
-
+    let actual_move = 1;
     setInterval(async function(){
         try {
             let players;
             let connected;
             let state;
             let numbers;
-            let actual_move;
+            
             await Match.findByPk(match_id).then(match => {
                 players = match.players;
                 connected = match.connected;
@@ -43,28 +41,24 @@ app.get("/sse/:id", async (req, res) => {
                 numbers = match.numbers;
                 actual_move = match.actual_move;
             })
+
+            if(connected == players && state == 'pending'){
+                //PARTITA INIZIATA
+                await Match.update({state: 'started'}, { where: { id: match_id }})
+            } 
             
-
-            if(connected == players && state == 'started'){
-                //INIZIA L'ESTRAZIONE DEI NUMERI
-                let number = numbers[actual_move].toString()
-                res.write(number + '\n');
-
+            if(players > 0 && connected == players && state == 'started'){
+                //ESTRAZIONE NUMERI
                 await Match.increment('actual_move',{ where: { id: match_id}})
-
-
             } else if (state == 'closed'){
-                res.write('event: close\ndata:\n\n');
                 res.end();
+                
             }
-
-
-
         } catch (error) {
             console.log(error);
         }
 
-    }, 10000)
+    }, 5000)
   })
 
 

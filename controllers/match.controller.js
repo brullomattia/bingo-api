@@ -27,25 +27,6 @@ const addMatch = async (req, res) => {
 }
 
 
-
-
-const startGame = async (req, res) => {
-    const match_id = req.params.match_id;
-
-    let info = {
-        state: 'started'
-    }
-
-    try {
-        const match = await Match.update(info, { where: { id: match_id }})
-        res.status(200).send({message: 'Match started'})
-    } catch (error) {
-        res.send(error);
-    }
-    
-    
-}
-
 const checkFive = async (req, res) => {
     try {
         const {user_id, match_id} = req.body;
@@ -139,11 +120,41 @@ const checkBingo = async (req, res) => {
     }
 }
 
+const getNumber = async (req, res) => {
+    try {
+        const match_id = req.params.match_id;
+        let actual_move;
+        let numbers;
+        await Match.findByPk(match_id).then(match => {
+            actual_move=match.actual_move;
+            numbers = match.numbers;
+        });
+        res.send({data: numbers[actual_move]});
+    } catch (error) {
+        res.send({error: error});
+    }
+}
+
+const getMatches = async (req, res) => {
+    let state = req.params.state;
+    try {
+        let matches = await Match.findAll({ 
+            where : {
+                state : state
+            }
+        })
+        res.send({data: matches});
+    } catch (error) {
+        res.send({error: error});
+    }
+}
+
 
 module.exports = {
     addMatch,
-    startGame,
+    getMatches,
     checkFive,
     checkBingo,
+    getNumber
     
 }

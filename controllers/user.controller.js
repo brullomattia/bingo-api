@@ -22,10 +22,40 @@ const addUser = async (req, res) => {
     
 }
 
+const auth = async (req, res) => {
+    const { mobile_id } = req.params.mobile_id;
+    
+    try {
+        let user = await User.findOne({ 
+            where : {
+                mobile_id : mobile_id,
+            }
+        })
+
+        res.status(200).send(user);
+    } catch (error) {
+        res.sendStatus(404);
+    }
+    
+}
+
+const getUsers = async (req, res) => {
+    
+    try {
+        let users = await User.findAll();
+
+        res.send({data: users});
+    } catch (error) {
+        res.send({error: error});
+    }
+}
+
 
 
 
 module.exports = {
     addUser,
+    auth,
+    getUsers
     
 }

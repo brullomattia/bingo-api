@@ -16,6 +16,7 @@ router.put("/matches/checkFive", matchController.checkFive);
 router.put("/matches/checkBingo", matchController.checkBingo);
 router.get("/matches/:state", matchController.getMatches);
 router.get("/matches/getNumber/:match_id", matchController.getNumber);
+router.get("/match/:match_id", matchController.getMatch);
 
 //cards
 router.post("/cards/joinGame", cardController.joinGame);

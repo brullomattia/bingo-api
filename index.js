@@ -32,7 +32,6 @@ app.get("/start_game/:id", async (req, res) => {
       let connected;
       let state;
       let numbers;
-      //console.log(match_id);
       let match = await Match.findOne({
         where: {
           id: match_id,
@@ -53,7 +52,7 @@ app.get("/start_game/:id", async (req, res) => {
       if (players > 0 && connected == players && state == "started") {
         //ESTRAZIONE NUMERI
         await Match.increment("actual_move", { where: { id: match_id } });
-      } else if (state == "closed") {
+      } else if (state == "closed" || actual_move == 90) {
         res.end();
       }
     } catch (error) {

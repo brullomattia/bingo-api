@@ -9,6 +9,7 @@ router.post("/users/addUser", userController.addUser);
 router.get("/auth/:mobile_id", userController.auth);
 router.get("/users", userController.getUsers);
 router.get("/users/ready/:match_id", userController.ready);
+router.get("/users/exit/:match_id", userController.exit);
 
 //matches
 router.post("/matches/addMatch", matchController.addMatch);

@@ -21,8 +21,8 @@ app.use("/api", router);
 app.get("/start_game/:id", async (req, res) => {
   const match_id = req.params.id;
   //await Match.increment('connected',{ where: { id: match_id}})
-  res.set("Content-Type", "text/event-stream");
-  res.set("Connection", "keep-alive");
+  //res.set("Content-Type", "text/event-stream");
+  //res.set("Connection", "keep-alive");
   res.set("Cache-Control", "no-cache");
   res.set("Access-Control-Allow-Origin", "*");
   let actual_move = 0;
@@ -52,7 +52,8 @@ app.get("/start_game/:id", async (req, res) => {
       if (players > 0 && connected == players && state == "started") {
         //ESTRAZIONE NUMERI
         await Match.increment("actual_move", { where: { id: match_id } });
-      } else if (state == "closed" || actual_move == 90) {
+      } else if (state == "closed" || actual_move > 91 || players == 0) {
+        await Match.update({ state: "closed" }, { where: { id: match_id } });
         res.end();
       }
     } catch (error) {

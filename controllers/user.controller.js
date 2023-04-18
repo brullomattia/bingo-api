@@ -64,9 +64,22 @@ const ready = async (req, res) => {
   }
 };
 
+const exit = async (req, res) => {
+  try {
+    const match_id = req.params.match_id;
+    console.log(match_id);
+
+    await Match.increment("players", { by: -1, where: { id: match_id } });
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(400).send({ error: error });
+  }
+};
+
 module.exports = {
   addUser,
   auth,
   getUsers,
   ready,
+  exit,
 };
